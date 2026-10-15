@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status & Riwayat Booking - Rental Kendaraan</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-top: 70px;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+        }
+        .vehicle-img {
+            height: 200px;
+            object-fit: cover;
+            background-color: #e9ecef;
+        }
+        .user-dropdown {
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 5px;
+        }
+        .booking-card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .booking-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .vehicle-thumb {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .vehicle-thumb-placeholder {
+            width: 100%;
+            height: 85px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-car-front-fill me-2"></i>
+            <strong>Rental Mobil</strong>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-house-door me-1"></i> Beranda
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-car-front me-1"></i> Katalog Kendaraan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-journal-text me-1"></i> Booking Saya
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center user-dropdown"
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="user-avatar me-2 shadow-sm">
+                            J
+                        </div>
+                        <div class="d-none d-md-block text-start">
+                            <div class="small fw-bold text-white lh-1">John Doe</div>
+                            <div class="small text-white-50" style="font-size: 0.75rem;">john@email.com</div>
+                        </div>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                <i class="bi bi-person"></i> Profil Saya
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                <i class="bi bi-journal-check"></i> Booking Saya
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 text-danger" href="#">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Alert Success (Hardcoded) -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> Data booking berhasil dimuat!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header Halaman -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-journal-check text-primary me-2"></i>Status & Pengajuan Penyewaan</h4>
+            <p class="text-muted small mb-0">Pantau status persetujuan dan riwayat penyewaan kendaraan Anda di sini.</p>
+        </div>
+        <a href="#" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i> Sewa Kendaraan Lain
+        </a>
+    </div>
+
+    <!-- Daftar Booking -->
+    <div class="d-flex flex-column gap-3">
+        <!-- Booking Card 1 - Pending -->
+        <div class="card booking-card">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="text-muted small d-block">Kode Booking</span>
+                    <span class="fw-bold font-monospace text-dark fs-6">BK-20240825-001</span>
+                    <small class="text-muted ms-2">(25 Aug 2026, 10:30)</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-warning text-dark px-3 py-2"><i class="bi bi-clock me-1"></i> Menunggu Konfirmasi</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 px-3 py-2">
+                        <i class="bi bi-hourglass-split me-1"></i> Belum Bayar
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-2 col-4">
+                        <div class="vehicle-thumb-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-8">
+                        <span class="badge bg-secondary mb-1">MPV</span>
+                        <h6 class="fw-bold mb-1">Toyota Avanza</h6>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Plat: <strong>B 1234 ABC</strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="mb-1">
+                            <small class="text-muted d-block">Tgl Pengambilan:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-event me-1"></i>01 Aug 2026</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Tgl Pengembalian:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-check me-1"></i>04 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Biaya:</small>
+                        <h6 class="fw-bold text-primary mb-0">Rp 1.050.000</h6>
+                        <small class="text-muted font-monospace">(3 Hari)</small>
+                    </div>
+
+                    <div class="col-md-2 col-6 text-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmCancel('BK-20240825-001')">
+                            <i class="bi bi-x-circle me-1"></i> Batalkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Card 2 - Approved -->
+        <div class="card booking-card">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="text-muted small d-block">Kode Booking</span>
+                    <span class="fw-bold font-monospace text-dark fs-6">BK-20240820-002</span>
+                    <small class="text-muted ms-2">(20 Aug 2026, 14:15)</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-info text-dark px-3 py-2"><i class="bi bi-hand-thumbs-up me-1"></i> Disetujui</span>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                        <i class="bi bi-cash-stack me-1"></i> Lunas
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-2 col-4">
+                        <div class="vehicle-thumb-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-8">
+                        <span class="badge bg-secondary mb-1">SUV</span>
+                        <h6 class="fw-bold mb-1">Honda CR-V</h6>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Plat: <strong>B 5678 DEF</strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="mb-1">
+                            <small class="text-muted d-block">Tgl Pengambilan:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-event me-1"></i>15 Aug 2026</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Tgl Pengembalian:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-check me-1"></i>17 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Biaya:</small>
+                        <h6 class="fw-bold text-primary mb-0">Rp 1.100.000</h6>
+                        <small class="text-muted font-monospace">(2 Hari)</small>
+                    </div>
+
+                    <div class="col-md-2 col-6 text-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmCancel('BK-20240820-002')">
+                            <i class="bi bi-x-circle me-1"></i> Batalkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Card 3 - On Rent -->
+        <div class="card booking-card">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="text-muted small d-block">Kode Booking</span>
+                    <span class="fw-bold font-monospace text-dark fs-6">BK-20240815-003</span>
+                    <small class="text-muted ms-2">(15 Aug 2026, 09:45)</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2"><i class="bi bi-car-front me-1"></i> Sedang Disewa</span>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                        <i class="bi bi-cash-stack me-1"></i> Lunas
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-2 col-4">
+                        <div class="vehicle-thumb-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-8">
+                        <span class="badge bg-secondary mb-1">Sedan</span>
+                        <h6 class="fw-bold mb-1">Toyota Camry</h6>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Plat: <strong>B 9012 GHI</strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="mb-1">
+                            <small class="text-muted d-block">Tgl Pengambilan:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-event me-1"></i>16 Aug 2026</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Tgl Pengembalian:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-check me-1"></i>19 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Biaya:</small>
+                        <h6 class="fw-bold text-primary mb-0">Rp 1.800.000</h6>
+                        <small class="text-muted font-monospace">(3 Hari)</small>
+                    </div>
+
+                    <div class="col-md-2 col-6 text-end">
+                        <span class="text-muted small"><i class="bi bi-lock me-1"></i>Terkunci</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Card 4 - Completed -->
+        <div class="card booking-card">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="text-muted small d-block">Kode Booking</span>
+                    <span class="fw-bold font-monospace text-dark fs-6">BK-20240810-004</span>
+                    <small class="text-muted ms-2">(10 Aug 2026, 11:20)</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i> Selesai</span>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                        <i class="bi bi-cash-stack me-1"></i> Lunas
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-2 col-4">
+                        <div class="vehicle-thumb-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-8">
+                        <span class="badge bg-secondary mb-1">MPV</span>
+                        <h6 class="fw-bold mb-1">Suzuki Ertiga</h6>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Plat: <strong>B 3456 JKL</strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="mb-1">
+                            <small class="text-muted d-block">Tgl Pengambilan:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-event me-1"></i>11 Aug 2026</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Tgl Pengembalian:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-check me-1"></i>12 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Biaya:</small>
+                        <h6 class="fw-bold text-primary mb-0">Rp 320.000</h6>
+                        <small class="text-muted font-monospace">(1 Hari)</small>
+                    </div>
+
+                    <div class="col-md-2 col-6 text-end">
+                        <span class="text-muted small"><i class="bi bi-lock me-1"></i>Selesai</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Card 5 - Cancelled -->
+        <div class="card booking-card">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="text-muted small d-block">Kode Booking</span>
+                    <span class="fw-bold font-monospace text-dark fs-6">BK-20240805-005</span>
+                    <small class="text-muted ms-2">(05 Aug 2026, 16:00)</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-danger px-3 py-2"><i class="bi bi-x-circle me-1"></i> Dibatalkan</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 px-3 py-2">
+                        <i class="bi bi-hourglass-split me-1"></i> Belum Bayar
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-2 col-4">
+                        <div class="vehicle-thumb-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-8">
+                        <span class="badge bg-secondary mb-1">Hatchback</span>
+                        <h6 class="fw-bold mb-1">Honda Brio</h6>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Plat: <strong>B 7890 MNO</strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="mb-1">
+                            <small class="text-muted d-block">Tgl Pengambilan:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-event me-1"></i>06 Aug 2026</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Tgl Pengembalian:</small>
+                            <strong class="small text-dark"><i class="bi bi-calendar-check me-1"></i>08 Aug 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <small class="text-muted d-block">Total Biaya:</small>
+                        <h6 class="fw-bold text-primary mb-0">Rp 500.000</h6>
+                        <small class="text-muted font-monospace">(2 Hari)</small>
+                    </div>
+
+                    <div class="col-md-2 col-6 text-end">
+                        <span class="text-muted small"><i class="bi bi-lock me-1"></i>Dibatalkan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Konfirmasi Cancel -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="cancelModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Konfirmasi Pembatalan
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin membatalkan booking:</p>
+                <div class="alert alert-warning">
+                    <strong id="cancelBookingCode" class="font-monospace"></strong>
+                </div>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Status kendaraan akan kembali tersedia dan booking ini akan ditandai sebagai "Dibatalkan".
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                </button>
+                <button type="button" class="btn btn-danger" onclick="processCancel()">
+                    <i class="bi bi-x-circle me-1"></i> Ya, Batalkan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmCancel(bookingCode) {
+        // Set kode booking di modal
+        document.getElementById('cancelBookingCode').textContent = bookingCode;
+
+        // Tampilkan modal
+        const cancelModal = new bootstrap.Modal(document.getElementById('cancelModal'));
+        cancelModal.show();
+    }
+
+    function processCancel() {
+        // Tutup modal
+        const cancelModal = bootstrap.Modal.getInstance(document.getElementById('cancelModal'));
+        cancelModal.hide();
+
+        // Tampilkan alert sukses
+        const alertHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> Booking berhasil dibatalkan!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+
+        const container = document.querySelector('.container');
+        container.insertAdjacentHTML('afterbegin', alertHTML);
+
+        // Scroll ke atas
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Laporan Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1a56db;
+            padding-bottom: 15px;
+        }
+        .header h2 {
+            color: #1a56db;
+            margin: 0 0 5px 0;
+            font-size: 20px;
+        }
+        .header p {
+            margin: 0;
+            color: #666;
+            font-size: 12px;
+        }
+        .summary-box {
+            background: #f0f4ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+        }
+        .summary-box table {
+            width: 100%;
+            border: none;
+        }
+        .summary-box td {
+            padding: 5px 10px;
+            border: none;
+            font-size: 12px;
+        }
+        .summary-box .label {
+            color: #4b5563;
+        }
+        .summary-box .value {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        table.data {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table.data th {
+            background: #1a56db;
+            color: white;
+            padding: 8px 6px;
+            font-size: 10px;
+            text-align: left;
+        }
+        table.data td {
+            padding: 6px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 10px;
+        }
+        table.data tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-primary { background: #e0e7ff; color: #3730a3; }
+        .footer {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-success { color: #059669; }
+        .text-danger { color: #dc2626; }
+        .fw-bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>LAPORAN TRANSAKSI BOOKING KENDARAAN</h2>
+        <p>Periode: 01 Maret 2024 - 31 Maret 2024</p>
+    </div>
+
+    <div class="summary-box">
+        <table>
+            <tr>
+                <td width="25%"><span class="label">Total Transaksi:</span></td>
+                <td width="25%"><span class="value">41</span></td>
+                <td width="25%"><span class="label">Total Pendapatan:</span></td>
+                <td width="25%"><span class="value text-success">Rp 28.500.000</span></td>
+            </tr>
+            <tr>
+                <td><span class="label">Total Denda:</span></td>
+                <td><span class="value text-danger">Rp 750.000</span></td>
+                <td><span class="label">Pending / Approved:</span></td>
+                <td><span class="value">3 / 5</span></td>
+            </tr>
+            <tr>
+                <td><span class="label">On Rent:</span></td>
+                <td><span class="value">8</span></td>
+                <td><span class="label">Completed / Cancelled:</span></td>
+                <td><span class="value">23 / 2</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="data">
+        <thead>
+            <tr>
+                <th class="text-center" width="4%">No</th>
+                <th width="12%">Kode Booking</th>
+                <th width="14%">Customer</th>
+                <th width="12%">Kendaraan</th>
+                <th width="7%">Tgl Ambil</th>
+                <th width="7%">Tgl Kembali</th>
+                <th width="7%">Aktual</th>
+                <th class="text-right" width="10%">Total</th>
+                <th class="text-right" width="8%">Denda</th>
+                <th width="9%">Status</th>
+                <th width="8%">Bayar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td class="fw-bold">BK-20240320-001</td>
+                <td>
+                    Siti Nurhaliza<br>
+                    <small style="color: #6b7280;">0814-5678-9012</small>
+                </td>
+                <td>
+                    Toyota Avanza<br>
+                    <small style="color: #6b7280;">B 1234 ABC</small>
+                </td>
+                <td>21/03/2024</td>
+                <td>24/03/2024</td>
+                <td>-</td>
+                <td class="text-right">Rp 1.200.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-warning">Pending</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #9ca3af;">Belum</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">2</td>
+                <td class="fw-bold">BK-20240320-002</td>
+                <td>
+                    Rudi Hartono<br>
+                    <small style="color: #6b7280;">0815-6789-0123</small>
+                </td>
+                <td>
+                    Honda Brio<br>
+                    <small style="color: #6b7280;">B 5678 DEF</small>
+                </td>
+                <td>22/03/2024</td>
+                <td>25/03/2024</td>
+                <td>-</td>
+                <td class="text-right">Rp 750.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-warning">Pending</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #9ca3af;">Belum</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">3</td>
+                <td class="fw-bold">BK-20240319-003</td>
+                <td>
+                    Dewi Lestari<br>
+                    <small style="color: #6b7280;">0816-7890-1234</small>
+                </td>
+                <td>
+                    Mitsubishi Xpander<br>
+                    <small style="color: #6b7280;">B 9012 GHI</small>
+                </td>
+                <td>20/03/2024</td>
+                <td>23/03/2024</td>
+                <td>-</td>
+                <td class="text-right">Rp 1.200.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-info">Approved</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">4</td>
+                <td class="fw-bold">BK-20240318-004</td>
+                <td>
+                    Andi Wijaya<br>
+                    <small style="color: #6b7280;">0819-0123-4567</small>
+                </td>
+                <td>
+                    Daihatsu Terios<br>
+                    <small style="color: #6b7280;">B 7890 MNO</small>
+                </td>
+                <td>19/03/2024</td>
+                <td>22/03/2024</td>
+                <td>-</td>
+                <td class="text-right">Rp 1.350.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-primary">On Rent</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">5</td>
+                <td class="fw-bold">BK-20240315-005</td>
+                <td>
+                    Maya Anggraini<br>
+                    <small style="color: #6b7280;">0818-9012-3456</small>
+                </td>
+                <td>
+                    Suzuki Ertiga<br>
+                    <small style="color: #6b7280;">B 3456 JKL</small>
+                </td>
+                <td>16/03/2024</td>
+                <td>19/03/2024</td>
+                <td>20/03/2024</td>
+                <td class="text-right">Rp 975.000</td>
+                <td class="text-right">
+                    <span class="text-danger">Rp 250.000</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge badge-success">Completed</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">6</td>
+                <td class="fw-bold">BK-20240310-006</td>
+                <td>
+                    Budi Santoso<br>
+                    <small style="color: #6b7280;">0813-4567-8901</small>
+                </td>
+                <td>
+                    Toyota Avanza<br>
+                    <small style="color: #6b7280;">B 1234 ABC</small>
+                </td>
+                <td>11/03/2024</td>
+                <td>14/03/2024</td>
+                <td>14/03/2024</td>
+                <td class="text-right">Rp 1.200.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-success">Completed</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">7</td>
+                <td class="fw-bold">BK-20240308-007</td>
+                <td>
+                    Joko Widodo<br>
+                    <small style="color: #6b7280;">0817-8901-2345</small>
+                </td>
+                <td>
+                    Toyota Innova<br>
+                    <small style="color: #6b7280;">B 1111 PQR</small>
+                </td>
+                <td>09/03/2024</td>
+                <td>12/03/2024</td>
+                <td>13/03/2024</td>
+                <td class="text-right">Rp 1.500.000</td>
+                <td class="text-right">
+                    <span class="text-danger">Rp 500.000</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge badge-success">Completed</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">8</td>
+                <td class="fw-bold">BK-20240305-008</td>
+                <td>
+                    Siti Nurhaliza<br>
+                    <small style="color: #6b7280;">0814-5678-9012</small>
+                </td>
+                <td>
+                    Honda Brio<br>
+                    <small style="color: #6b7280;">B 5678 DEF</small>
+                </td>
+                <td>06/03/2024</td>
+                <td>09/03/2024</td>
+                <td>09/03/2024</td>
+                <td class="text-right">Rp 750.000</td>
+                <td class="text-right">-</td>
+                <td class="text-center">
+                    <span class="badge badge-success">Completed</span>
+                </td>
+                <td class="text-center">
+                    <span style="color: #059669; font-weight: bold;">Lunas</span>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr style="background: #e5e7eb; font-weight: bold;">
+                <td colspan="7" class="text-right">TOTAL:</td>
+                <td class="text-right text-success">Rp 28.500.000</td>
+                <td class="text-right text-danger">Rp 750.000</td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p>Dicetak pada: 31 Maret 2024 23:59:59 | Oleh: Budi Santoso</p>
+    </div>
+</body>
+</html>

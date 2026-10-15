@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Booking - Panel Petugas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 300px;
+            --topbar-height: 70px;
+            --sidebar-bg: #0f172a;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --bg-body: #f8fafc;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: var(--sidebar-bg);
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+            z-index: 1040;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-logo {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .brand-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .role-badge {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar .nav-link {
+            color: #94a3b8;
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 3px 0;
+            font-weight: 500;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 1.25rem;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--accent-color);
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .sidebar-heading {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #475569;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.4rem;
+            padding-left: 14px;
+        }
+
+        .wrapper {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-navbar {
+            height: var(--topbar-height);
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+
+        .main-content {
+            padding: 32px;
+            flex-grow: 1;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        .booking-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .booking-table {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .booking-table thead th {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .user-avatar-sm {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- SIDEBAR -->
+    <aside class="sidebar position-fixed top-0 start-0 bottom-0 p-3 d-flex flex-column">
+        <div class="brand-logo p-3 mb-3 text-center">
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-car-front-fill text-white fs-4"></i>
+                </div>
+                <div class="text-start">
+                    <h5 class="text-white fw-bold mb-0" style="letter-spacing: -0.5px; font-size: 1.15rem;">Rental Mobil</h5>
+                    <small class="text-slate-400" style="color: #94a3b8; font-size: 0.75rem;">Management System</small>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-top border-secondary border-opacity-10 d-flex justify-content-center">
+                <span class="badge role-badge px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5" style="font-size: 0.75rem;">
+                    <i class="bi bi-shield-check-fill text-primary"></i>
+                    Panel Petugas
+                </span>
+            </div>
+        </div>
+
+        <div class="flex-grow-1 overflow-y-auto sidebar-scroll pe-1">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <div class="sidebar-heading">Transaksi</div>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="bi bi-journal-check"></i>
+                        <span>Daftar Booking</span>
+                    </a>
+                </li>
+
+                <div class="sidebar-heading">Lainnya</div>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profil Saya</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="pt-3 border-top border-secondary border-opacity-20 mt-auto">
+            <a href="#" class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2 rounded-3" style="border-color: rgba(239, 68, 68, 0.3);">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+                <span class="fw-semibold">Keluar Panel</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="wrapper flex-grow-1">
+        <header class="top-navbar d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <h5 class="mb-0 fw-bold text-dark">Daftar Booking</h5>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle text-dark d-flex align-items-center user-dropdown"
+                       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar me-2 shadow-sm">B</div>
+                        <div class="d-none d-md-block text-start">
+                            <div class="small fw-bold text-dark lh-1">Budi Santoso</div>
+                            <div class="small text-muted" style="font-size: 0.75rem;">budi.santoso@email.com</div>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profil Saya</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Alert Info (Hardcoded) -->
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle me-2"></i> Anda memiliki <strong>3 booking pending</strong> yang perlu diproses.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        <i class="bi bi-journal-check me-2 text-primary"></i>Daftar Booking
+                    </h4>
+                    <p class="text-muted mb-0">Pantau dan kelola status booking pelanggan</p>
+                </div>
+            </div>
+
+            <!-- Statistik Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col">
+                    <div class="card booking-card h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-3 bg-warning bg-opacity-10 p-3">
+                                <i class="bi bi-clock-fill text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Pending</h6>
+                                <h3 class="fw-bold mb-0">3</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card booking-card h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-3 bg-info bg-opacity-10 p-3">
+                                <i class="bi bi-check-circle-fill text-info fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Approved</h6>
+                                <h3 class="fw-bold mb-0">5</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card booking-card h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-3 bg-primary bg-opacity-10 p-3">
+                                <i class="bi bi-truck text-primary fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">On Rent</h6>
+                                <h3 class="fw-bold mb-0">8</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card booking-card h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-3 bg-success bg-opacity-10 p-3">
+                                <i class="bi bi-check2-all text-success fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Completed</h6>
+                                <h3 class="fw-bold mb-0">23</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card booking-card h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-3 bg-danger bg-opacity-10 p-3">
+                                <i class="bi bi-x-circle-fill text-danger fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Cancelled</h6>
+                                <h3 class="fw-bold mb-0">2</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body">
+                    <form action="#" method="GET">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Cari Booking/User</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="bi bi-search text-muted"></i>
+                                    </span>
+                                    <input type="text" name="search" class="form-control border-start-0"
+                                           placeholder="Kode booking atau nama...">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small text-muted">Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="">Semua Status</option>
+                                    <option value="pending">⏳ Pending</option>
+                                    <option value="approved">✅ Approved</option>
+                                    <option value="on_rent">🚗 On Rent</option>
+                                    <option value="completed">✔️ Completed</option>
+                                    <option value="cancelled">❌ Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small text-muted">Dari Tanggal</label>
+                                <input type="date" name="date_from" class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small text-muted">Sampai Tanggal</label>
+                                <input type="date" name="date_to" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="bi bi-funnel me-2"></i>Filter
+                                    </button>
+                                    <a href="#" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table Booking -->
+            <div class="card border-0 shadow-sm rounded-3 booking-table">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 160px;">Kode Booking</th>
+                                    <th>Customer</th>
+                                    <th>Kendaraan</th>
+                                    <th>Tanggal Sewa</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th class="text-center pe-4" style="width: 120px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240320-001</div>
+                                        <small class="text-muted">20 Mar 2024 08:30</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-primary bg-opacity-10 text-primary">S</div>
+                                            <div>
+                                                <div class="fw-semibold">Siti Nurhaliza</div>
+                                                <small class="text-muted">siti.nurhaliza@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Toyota Avanza</div>
+                                        <small class="text-muted">B 1234 ABC</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                21 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                24 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 1.200.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <a href="#" class="btn btn-sm btn-primary rounded-3">
+                                            <i class="bi bi-pencil me-1"></i>Proses
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240320-002</div>
+                                        <small class="text-muted">20 Mar 2024 09:15</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-success bg-opacity-10 text-success">R</div>
+                                            <div>
+                                                <div class="fw-semibold">Rudi Hartono</div>
+                                                <small class="text-muted">rudi.hartono@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Honda Brio</div>
+                                        <small class="text-muted">B 5678 DEF</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                22 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                25 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 750.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <a href="#" class="btn btn-sm btn-primary rounded-3">
+                                            <i class="bi bi-pencil me-1"></i>Proses
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240319-003</div>
+                                        <small class="text-muted">19 Mar 2024 14:00</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-warning bg-opacity-10 text-warning">D</div>
+                                            <div>
+                                                <div class="fw-semibold">Dewi Lestari</div>
+                                                <small class="text-muted">dewi.lestari@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Mitsubishi Xpander</div>
+                                        <small class="text-muted">B 9012 GHI</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                20 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                23 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 1.200.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <a href="#" class="btn btn-sm btn-primary rounded-3">
+                                            <i class="bi bi-pencil me-1"></i>Proses
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240318-004</div>
+                                        <small class="text-muted">18 Mar 2024 10:30</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-info bg-opacity-10 text-info">A</div>
+                                            <div>
+                                                <div class="fw-semibold">Andi Wijaya</div>
+                                                <small class="text-muted">andi.wijaya@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Daihatsu Terios</div>
+                                        <small class="text-muted">B 7890 MNO</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                19 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                22 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 1.350.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Approved
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <span class="text-muted small">
+                                            <i class="bi bi-lock me-1"></i>Selesai
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240315-005</div>
+                                        <small class="text-muted">15 Mar 2024 16:45</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-danger bg-opacity-10 text-danger">M</div>
+                                            <div>
+                                                <div class="fw-semibold">Maya Anggraini</div>
+                                                <small class="text-muted">maya.anggraini@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Suzuki Ertiga</div>
+                                        <small class="text-muted">B 3456 JKL</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                16 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                19 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 975.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                                            <i class="bi bi-truck me-1"></i>
+                                            On Rent
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <span class="text-muted small">
+                                            <i class="bi bi-lock me-1"></i>Selesai
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">BK-20240310-006</div>
+                                        <small class="text-muted">10 Mar 2024 11:20</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar-sm bg-primary bg-opacity-10 text-primary">B</div>
+                                            <div>
+                                                <div class="fw-semibold">Budi Santoso</div>
+                                                <small class="text-muted">budi.santoso@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">Toyota Avanza</div>
+                                        <small class="text-muted">B 1234 ABC</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <small>
+                                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                                11 Mar 2024
+                                            </small>
+                                            <small>
+                                                <i class="bi bi-calendar-x text-danger me-1"></i>
+                                                14 Mar 2024
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">Rp 1.200.000</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                                            <i class="bi bi-check2-all me-1"></i>
+                                            Completed
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <span class="text-muted small">
+                                            <i class="bi bi-lock me-1"></i>Selesai
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            Menampilkan 1 - 6 dari 41 data
+                        </small>
+                        <nav>
+                            <ul class="pagination pagination-sm justify-content-end mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.sidebar .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        console.log('Daftar Booking page loaded successfully!');
+        console.log('User: Budi Santoso (Petugas)');
+        console.log('Total bookings: 41');
+    });
+</script>
+
+</body>
+</html>
