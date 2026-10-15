@@ -40,4 +40,8 @@ class Penyewaan extends Model
     public function pengembalians() {
         return $this->hasMany(Pengembalian::class);
     }
+
+    public function dendas() {
+        return $this->hasMany(Denda::class);
+    }
 }

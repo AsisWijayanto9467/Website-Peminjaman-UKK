@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('dendas', function (Blueprint $table) {
             $table->id();
             $table->string("kode_denda");
-            $table->foreignId("penggambalian_id")->constrained("pengembalians")->onDelete("cascade");
+            $table->foreignId("pengembalian_id")->constrained("pengembalians")->onDelete("cascade");
+            $table->foreignId("penyewaan_id")->constrained("penyewaans")->onDelete("cascade");
             $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
             $table->foreignId("petugas_id")->nullable()->constrained("users")->onDelete("set null");
             $table->decimal("nominal")->default(0);

@@ -21,6 +21,13 @@ class Pengembalian extends Model
         "tanggal_konfirmasi",
     ];
 
+    protected $casts = [
+        "actual_return_date" => "date",
+        "tanggal_pengajuan"  => "date",
+        "tanggal_konfirmasi" => "date",
+    ];
+
+
     public function penyewaan() {
         return $this->belongsTo(Penyewaan::class);
     }

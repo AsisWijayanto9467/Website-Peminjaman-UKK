@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PenggunaPengembalian;
 use App\Http\Controllers\PenyewaanController;
 use App\Http\Controllers\PeralatanController;
 use App\Http\Controllers\PetugasDendaController;
@@ -34,12 +35,20 @@ Route::middleware("auth")->group(function() {
     Route::get("/keranjang", [PenyewaanController::class, "keranjang"])->name("keranjang.index");
     Route::patch("/keranjang/{id}/{action}", [PenyewaanController::class, "updateQty"])->name("keranjang.updateQty");
     Route::delete("/keranjang/{id}", [PenyewaanController::class, "destroy"])->name("keranjang.destroy");
-    Route::get("/penyewaan/qr", [PenyewaanController::class, "qr"])->name("penyewaan.qr");
     Route::get("/penyewaan/booking", [PenyewaanController::class, "booking"])->name("penyewaan.booking");
     Route::post("/penyewaan/store", [PenyewaanController::class, "store"])->name("penyewaan.store");
 
     Route::get("/booking/user/{id}", [BookingController::class, "index"])->name("booking.list");
-    Route::post('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('penyewaan.cancel');
+    Route::get("/booking/{id}/payment", [BookingController::class, "payment"])->name("booking.payment");
+    Route::get("/booking/{id}/qr", [PenyewaanController::class, "qr"])->name("booking.qr");
+    Route::post('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+    Route::post("/booking/{id}/payment", [BookingController::class, "uploadPayment"])->name("booking.payment.upload");
+
+    Route::get("/pengembalian/user/{id}", [PenggunaPengembalian::class, "index"])->name("pengembalian.form");
+    Route::post("/pengembalian/user/{id}", [PenggunaPengembalian::class, "store"])->name("pengembalian.store");
+
+    Route::get("/denda/user/{id}", [BookingController::class, "formDenda"])->name("denda.form");
+    Route::post("/denda/user/{id}", [BookingController::class, "uploadDenda"])->name("denda.upload");
 
     Route::middleware("admin")->group(function() {
         Route::get("/activity-log", [ActivityController::class, "index"])->name("activity.list");
@@ -71,13 +80,25 @@ Route::middleware("auth")->group(function() {
     Route::middleware("petugas")->group(function() {
         Route::get("/penyewaan/admin", [PetugasPenyewaanController::class, "index"])->name("petugas.penyewaan.list");
         Route::get("/penyewaan/admin/{id}", [PetugasPenyewaanController::class, "detail"])->name("petugas.penyewaan.setting");
+        Route::delete("/penyewaan/admin/{id}", [PetugasPenyewaanController::class, "destroy"])->name("petugas.penyewaan.destroy");
+        Route::post("/penyewaan/admin/{id}/approve",  [PetugasPenyewaanController::class, "approve"])->name("petugas.penyewaan.approve");
+        Route::post("/penyewaan/admin/{id}/decline",  [PetugasPenyewaanController::class, "decline"])->name("petugas.penyewaan.decline");
+        Route::post("/penyewaan/admin/{id}/confirm-payment", [PetugasPenyewaanController::class, "confirmPayment"])->name("petugas.penyewaan.confirmPayment");
 
+        Route::post("/penyewaan/admin/{id}/on-rent",  [PetugasPenyewaanController::class, "onRent"])->name("petugas.penyewaan.onRent");
         Route::get("/pengembalian/admin", [PetugasPengembalianController::class, "index"])->name("petugas.pengembalian.list");
         Route::get("/pengembalian/admin/{id}", [PetugasPengembalianController::class, "detail"])->name("petugas.pengembalian.setting");
+        Route::post("/pengembalian/admin/{id}/accept", [PetugasPengembalianController::class, "accept"])->name("petugas.pengembalian.accept");
+        Route::post("/pengembalian/admin/{id}/reject", [PetugasPengembalianController::class, "reject"])->name("petugas.pengembalian.reject");
+
+        Route::get("/pengembalian/admin/{id}/denda",  [PetugasPengembalianController::class, "dendaForm"])->name("petugas.pengembalian.dendaForm");
+        Route::post("/pengembalian/admin/{id}/denda", [PetugasPengembalianController::class, "dendaStore"])->name("petugas.pengembalian.dendaStore");
 
         Route::get("/denda/admin", [PetugasDendaController::class, "index"])->name("petugas.denda.list");
         Route::get("/denda/admin/{id}", [PetugasDendaController::class, "detail"])->name("petugas.denda.setting");
+        Route::post("/denda/admin/{id}/confirm", [PetugasDendaController::class, "confirmPayment"])->name("petugas.denda.confirm");
 
-        Route::get("/report/admin/", [LaporanController::class, "index"])->name("petugas.report.list");
+        Route::get("/report/admin", [LaporanController::class, "index"])->name("petugas.report.list");
+        Route::get("/report/admin/export", [LaporanController::class, "export"])->name("petugas.report.export");
     });
 });

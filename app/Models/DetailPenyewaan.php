@@ -12,6 +12,7 @@ class DetailPenyewaan extends Model
         "penyewaan_id",
         "peralatan_id",
         "price_per_day",
+        "subtotal",
         "durasi_hari",
         "jumlah"
     ];

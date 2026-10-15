@@ -42,10 +42,10 @@
 
                     <!-- Tombol Aksi -->
                     <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <a href="{{ route("keranjang.index") }}" class="btn btn-outline-secondary btn-action">
+                        <a href="{{ route('booking.list', Auth::id()) }}" class="btn btn-outline-secondary btn-action">
                             <i class="bi bi-arrow-left me-2"></i>Kembali
                         </a>
-                        <a href="{{ route("penyewaan.booking") }}" class="btn btn-primary btn-action">
+                        <a href="{{ route('booking.payment', $penyewaan->id) }}" class="btn btn-primary btn-action">
                             Selanjutnya<i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>

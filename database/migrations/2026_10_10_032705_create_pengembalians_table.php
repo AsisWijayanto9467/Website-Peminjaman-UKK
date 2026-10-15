@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string("photo_prove")->nullable();
             $table->text("catatan_pengguna")->nullable();
             $table->text("catatan_petugas")->nullable();
-            $table->date("tanggal_pengajuan");
-            $table->date("tanggal_konfirmasi");
+            $table->date("tanggal_pengajuan")->nullable();
+            $table->date("tanggal_konfirmasi")->nullable();
             $table->timestamps();
         });
     }

@@ -14,23 +14,25 @@
     .booking-card:hover {
         box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
-    .vehicle-thumb {
-        width: 100%;
-        height: 85px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-    .vehicle-thumb-placeholder {
-        width: 100%;
-        height: 85px;
-        border-radius: 8px;
-        background: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .info-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
         color: #6c757d;
-        font-size: 2rem;
+        font-weight: 600;
     }
+    .info-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #212529;
+    }
+    .detail-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+    }
+    .detail-item:last-child { margin-bottom: 0; }
 </style>
 @endsection
 
@@ -38,10 +40,14 @@
 <div class="container mt-4">
 
     {{-- Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
-            <h4 class="fw-bold mb-1"><i class="bi bi-journal-check text-primary me-2"></i>Status & Pengajuan Penyewaan</h4>
-            <p class="text-muted small mb-0">Pantau status persetujuan dan riwayat penyewaan kendaraan Anda di sini.</p>
+            <h4 class="fw-bold mb-1">
+                <i class="bi bi-journal-check text-primary me-2"></i>Status & Riwayat Penyewaan
+            </h4>
+            <p class="text-muted small mb-0">
+                Pantau status persetujuan dan riwayat penyewaan Anda di sini.
+            </p>
         </div>
         <a href="{{ route('katalog.list') ?? '#' }}" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-plus-lg me-1"></i> Sewa Kendaraan Lain
@@ -67,7 +73,7 @@
                     'paid'   => ['label' => 'Lunas',       'class' => 'bg-success bg-opacity-10 text-success border border-success border-opacity-20', 'icon' => 'bi-cash-stack'],
                 ];
 
-                $st = $statusMap[$item->status] ?? ['label' => $item->status, 'class' => 'bg-secondary', 'icon' => 'bi-question'];
+                $st  = $statusMap[$item->status] ?? ['label' => $item->status, 'class' => 'bg-secondary', 'icon' => 'bi-question'];
                 $pay = $paymentMap[$item->payment_status] ?? ['label' => $item->payment_status, 'class' => 'bg-secondary', 'icon' => 'bi-question'];
 
                 // Durasi hari
@@ -75,18 +81,19 @@
                 $return = \Carbon\Carbon::parse($item->return_date);
                 $durasi = $pickup->diffInDays($return) ?: 1;
 
-                // Ambil peralatan pertama sebagai preview (kalau ada)
-                $firstDetail = $item->detailPenyewaans->first();
-                $peralatan = $firstDetail->peralatan ?? null;
-                $totalItem = $item->detailPenyewaans->count();
+                $details    = $item->detailPenyewaans;
+                $totalItem  = $details->count();
             @endphp
 
             <div class="card booking-card">
+                {{-- ============ HEADER: Kode Transaksi + Status ============ --}}
                 <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
-                        <span class="text-muted small d-block">Kode Booking</span>
+                        <span class="text-muted small d-block">Kode Transaksi</span>
                         <span class="fw-bold font-monospace text-dark fs-6">{{ $item->kode_penyewaan }}</span>
-                        <small class="text-muted ms-2">({{ $item->created_at->format('d M Y, H:i') }})</small>
+                        <small class="text-muted ms-2">
+                            ({{ optional($item->created_at)->format('d M Y, H:i') }})
+                        </small>
                     </div>
 
                     <div class="d-flex align-items-center gap-2">
@@ -99,81 +106,131 @@
                     </div>
                 </div>
 
+                {{-- ============ BODY ============ --}}
                 <div class="card-body">
-                    <div class="row align-items-center g-3">
-                        {{-- Thumbnail --}}
-                        <div class="col-md-2 col-4">
-                            @if ($peralatan && $peralatan->foto)
-                                <img src="{{ asset('uploads/peralatan/' . $peralatan->foto) }}" class="vehicle-thumb" alt="{{ $peralatan->name }}">
-                            @else
-                                <div class="vehicle-thumb-placeholder">
-                                    <i class="bi bi-car-front"></i>
-                                </div>
-                            @endif
-                        </div>
 
-                        {{-- Info Peralatan --}}
-                        <div class="col-md-3 col-8">
-                            <span class="badge bg-secondary mb-1">
-                                {{ $peralatan->kategori ?? 'Kendaraan' }}
-                            </span>
-                            <h6 class="fw-bold mb-1">
-                                {{ $peralatan->name ?? 'Tidak ada item' }}
-                                @if ($totalItem > 1)
-                                    <small class="text-muted">+{{ $totalItem - 1 }} lainnya</small>
-                                @endif
-                            </h6>
-                            <p class="text-muted small mb-0">
-                                <i class="bi bi-credit-card-2-front me-1"></i> Plat:
-                                <strong>{{ $peralatan->plat_nomor ?? '-' }}</strong>
-                            </p>
-                        </div>
-
-                        {{-- Tanggal --}}
+                    {{-- === Baris 1: Nama Peminjam + Kontak + Tanggal + Total === --}}
+                    <div class="row g-3 mb-3">
                         <div class="col-md-3 col-6">
-                            <div class="mb-1">
-                                <small class="text-muted d-block">Tgl Pengambilan:</small>
-                                <strong class="small text-dark">
-                                    <i class="bi bi-calendar-event me-1"></i>{{ $pickup->format('d M Y') }}
-                                </strong>
-                            </div>
-                            <div>
-                                <small class="text-muted d-block">Tgl Pengembalian:</small>
-                                <strong class="small text-dark">
-                                    <i class="bi bi-calendar-check me-1"></i>{{ $return->format('d M Y') }}
-                                </strong>
+                            <div class="info-label">Nama Peminjam</div>
+                            <div class="info-value">
+                                <i class="bi bi-person-circle text-primary me-1"></i>
+                                {{ $item->customer_name ?? '-' }}
                             </div>
                         </div>
 
-                        {{-- Total Biaya --}}
-                        <div class="col-md-2 col-6">
-                            <small class="text-muted d-block">Total Biaya:</small>
-                            <h6 class="fw-bold text-primary mb-0">
+                        <div class="col-md-3 col-6">
+                            <div class="info-label">No. Identitas (KTP)</div>
+                            <div class="info-value">
+                                <i class="bi bi-credit-card-2-front text-primary me-1"></i>
+                                {{ $item->customer_id_card ?? '-' }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6">
+                            <div class="info-label">Tanggal Pengambilan</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-event text-primary me-1"></i>
+                                {{ $pickup->format('d M Y') }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6">
+                            <div class="info-label">Tanggal Pengembalian</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-check text-primary me-1"></i>
+                                {{ $return->format('d M Y') }}
+                                <small class="text-muted">({{ $durasi }} hari)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- === Baris 2: Alamat === --}}
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <div class="info-label">Alamat Peminjam</div>
+                            <div class="info-value fw-normal">
+                                <i class="bi bi-geo-alt text-primary me-1"></i>
+                                {{ $item->customer_address ?? '-' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- === Baris 3: Detail Peralatan === --}}
+                    <div class="info-label mb-2">
+                        <i class="bi bi-box-seam me-1"></i>
+                        Detail Peralatan ({{ $totalItem }} item)
+                    </div>
+
+                    @if ($totalItem > 0)
+                        <div class="row g-2 mb-3">
+                            @foreach ($details as $d)
+                                @php
+                                    $alat = $d->peralatan;
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="detail-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-semibold small">
+                                                {{ $alat->nama_barang ?? 'Peralatan tidak ditemukan' }}
+                                            </div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">
+                                                <span class="font-monospace">{{ $alat->kode_barang ?? '-' }}</span>
+                                                &middot;
+                                                Rp {{ number_format($d->price_per_day, 0, ',', '.') }}/hari
+                                                &middot;
+                                                {{ $d->jumlah }} unit
+                                                &middot;
+                                                {{ $d->durasi_hari }} hari
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-bold text-primary small">
+                                                Rp {{ number_format($d->subtotal, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="alert alert-light border small mb-3">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Tidak ada detail peralatan pada transaksi ini.
+                        </div>
+                    @endif
+
+                    {{-- === Baris 4: Total + Aksi === --}}
+                    <div class="row align-items-center g-3 pt-3 border-top">
+                        <div class="col-md-6 col-12">
+                            <span class="info-label d-block">Total Biaya</span>
+                            <h5 class="fw-bold text-primary mb-0">
                                 Rp {{ number_format($item->total_price, 0, ',', '.') }}
-                            </h6>
-                            <small class="text-muted font-monospace">({{ $durasi }} Hari)</small>
+                            </h5>
                         </div>
 
-                        {{-- Action Buttons --}}
-                        <div class="col-md-2 col-6 text-end d-flex flex-column gap-1">
+                        <div class="col-md-6 col-12 text-md-end">
                             @if ($item->status === 'padding')
-                                {{-- Batalkan --}}
-                                <button type="button" class="btn btn-outline-danger btn-sm"
-                                        onclick="confirmCancel({{ $item->id }}, '{{ $item->kode_penyewaan }}')">
-                                    <i class="bi bi-x-circle me-1"></i> Batalkan
-                                </button>
-                                {{-- Upload Payment --}}
-                                <a href="{{ route('penyewaan.payment.form', $item->id) }}" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-upload me-1"></i> Upload Bayar
-                                </a>
+                                {{-- Batalkan dengan confirm() biasa, TANPA @method('DELETE') --}}
+                                <form action="{{ route('booking.cancel', $item->id) }}"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin ingin membatalkan booking {{ $item->kode_penyewaan }}?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x-circle me-1"></i> Batalkan
+                                    </button>
+                                </form>
 
                             @elseif ($item->status === 'approved')
                                 @if ($item->payment_status === 'unpaid')
-                                    <a href="{{ route('penyewaan.payment.form', $item->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-cash-coin me-1"></i> Bayar
+                                    <a href="{{ route('booking.qr', $item->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-cash-coin me-1"></i> Bayar Sekarang
                                     </a>
                                 @else
-                                    <span class="text-muted small"><i class="bi bi-lock me-1"></i>Menunggu Petugas</span>
+                                    <span class="text-muted small">
+                                        <i class="bi bi-lock me-1"></i>Menunggu Petugas
+                                    </span>
                                 @endif
 
                             @elseif ($item->status === 'rented')
@@ -182,15 +239,42 @@
                                 </a>
 
                             @elseif ($item->status === 'checking')
-                                <span class="text-muted small"><i class="bi bi-search me-1"></i>Verifikasi Petugas</span>
+                                <span class="text-muted small">
+                                    <i class="bi bi-search me-1"></i>Verifikasi Petugas
+                                </span>
 
                             @elseif ($item->status === 'denda')
-                                <a href="{{ route('denda.bayar', $item->id) }}" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-exclamation-triangle me-1"></i> Bayar Denda
-                                </a>
+                                @php
+                                    // Ambil denda terkait
+                                    $dendaItem = \App\Models\Denda::where('penyewaan_id', $item->id)->first();
+                                @endphp
 
+                                @if ($dendaItem)
+                                    @if ($dendaItem->status === 'belum dibayar')
+                                        @if ($dendaItem->bukti_dibayar)
+                                            <span class="text-muted small">
+                                                <i class="bi bi-hourglass-split me-1"></i>Menunggu Konfirmasi Petugas
+                                            </span>
+                                        @else
+                                            <a href="{{ route('denda.form', $dendaItem->id) }}"
+                                            class="btn btn-danger btn-sm">
+                                                <i class="bi bi-cash-coin me-1"></i>Bayar Denda
+                                            </a>
+                                        @endif
+                                    @else
+                                        <span class="text-muted small">
+                                            <i class="bi bi-check-circle me-1"></i>Denda Lunas
+                                        </span>
+                                    @endif
+                                @else
+                                    <span class="text-muted small">
+                                        <i class="bi bi-hourglass-split me-1"></i>Menunggu Denda
+                                    </span>
+                                @endif
                             @else
-                                <span class="text-muted small"><i class="bi bi-lock me-1"></i>{{ $st['label'] }}</span>
+                                <span class="text-muted small">
+                                    <i class="bi bi-lock me-1"></i>{{ $st['label'] }}
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -211,50 +295,4 @@
         @endforelse
     </div>
 </div>
-
-{{-- Modal Konfirmasi Cancel --}}
-<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold" id="cancelModalLabel">
-                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Konfirmasi Pembatalan
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin membatalkan booking:</p>
-                <div class="alert alert-warning">
-                    <strong id="cancelBookingCode" class="font-monospace"></strong>
-                </div>
-                <p class="text-muted small mb-0">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Status kendaraan akan kembali tersedia dan booking ini akan ditandai sebagai "Dibatalkan".
-                </p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
-                </button>
-                <form id="cancelForm" method="POST" action="">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-x-circle me-1"></i> Ya, Batalkan
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@section('script')
-<script>
-    function confirmCancel(id, kodeBooking) {
-        document.getElementById('cancelBookingCode').textContent = kodeBooking;
-        document.getElementById('cancelForm').action = `/booking/${id}/cancel`;
-        const cancelModal = new bootstrap.Modal(document.getElementById('cancelModal'));
-        cancelModal.show();
-    }
-</script>
 @endsection

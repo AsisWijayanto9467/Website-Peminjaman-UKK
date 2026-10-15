@@ -99,7 +99,7 @@
             <a href="{{ route('katalog.list') }}" class="btn btn-outline-secondary btn-lg order-sm-1">
                 <i class="bi bi-arrow-left me-2"></i>Kembali
             </a>
-            <a href="{{ route('penyewaan.qr') }}" class="btn btn-primary btn-lg order-sm-2">
+            <a href="{{ route('penyewaan.booking') }}" class="btn btn-primary btn-lg order-sm-2">
                 <i class="bi bi-credit-card me-2"></i>Checkout
             </a>
         </div>

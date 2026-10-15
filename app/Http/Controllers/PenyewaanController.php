@@ -25,9 +25,10 @@ class PenyewaanController extends Controller
         return view("UserRole.pengguna.transaction.keranjang", compact('keranjangs'));
     }
 
-    public function qr()
+    public function qr(string $id)
     {
-        return view("UserRole.pengguna.transaction.qr");
+        $penyewaan = Penyewaan::findOrFail($id);
+        return view("UserRole.pengguna.History.qr", compact("penyewaan"));
     }
 
     public function booking()
@@ -66,11 +67,32 @@ class PenyewaanController extends Controller
             $returnDate = Carbon::parse($request->return_date);
             $durasiHari = $pickupDate->diffInDays($returnDate) ?: 1;
 
-            // ================= Hitung Total Price Otomatis =================
+            // ================= Hitung Total Price & Detail =================
             $totalPrice = 0;
+            $details    = [];
+
             foreach ($keranjang as $item) {
-                $hargaPerHari = $item->peralatan->price ?? 0;
-                $totalPrice += $hargaPerHari * $item->jumlah * $durasiHari;
+                $hargaPerHari = optional($item->peralatan)->price_per_day ?? 0;
+                $jumlah       = (int) $item->jumlah;
+
+                // subtotal = harga per hari × jumlah × durasi hari
+                $subtotal = $hargaPerHari * $jumlah * $durasiHari;
+
+                // Kalau Anda mau subtotal hanya harian × jumlah (tanpa durasi):
+                // $subtotal = $hargaPerHari * $jumlah;
+
+                $totalPrice += $subtotal;
+
+                $details[] = [
+                    "penyewaan_id"  => null, // diisi setelah penyewaan dibuat
+                    "peralatan_id"  => $item->peralatan_id,
+                    "price_per_day" => $hargaPerHari,
+                    "subtotal"      => $subtotal,     // ← FIX: sekarang diisi
+                    "durasi_hari"   => $durasiHari,
+                    "jumlah"        => $jumlah,
+                    "created_at"    => now(),
+                    "updated_at"    => now(),
+                ];
             }
 
             // ================= Upload Foto =================
@@ -99,30 +121,23 @@ class PenyewaanController extends Controller
                 "kode_penyewaan"   => $request->kode_penyewaan,
                 "pickup_date"      => $request->pickup_date,
                 "return_date"      => $request->return_date,
-                "status"           => "padding",       // ← otomatis
-                "payment_status"   => "unpaid",        // ← otomatis
-                "total_price"      => $totalPrice,     // ← dihitung di server
+                "status"           => "padding",
+                "payment_status"   => "unpaid",
+                "total_price"      => $totalPrice,
                 "customer_name"    => $request->customer_name,
                 "customer_address" => $request->customer_address,
                 "customer_id_card" => $request->customer_id_card,
                 "face_photo"       => $facePhotoName,
                 "id_card_photo"    => $idCardPhotoName,
-                "payment_photo"    => null,            // ← diisi nanti saat upload bukti bayar
+                "payment_photo"    => null,
             ]);
 
             // ================= Pindahkan Keranjang → DetailPenyewaan =================
-            $details = [];
-            foreach ($keranjang as $item) {
-                $details[] = [
-                    "penyewaan_id"  => $penyewaan->id,
-                    "peralatan_id"  => $item->peralatan_id,
-                    "price_per_day" => $item->peralatan->price ?? 0,
-                    "durasi_hari"   => $durasiHari,
-                    "jumlah"        => $item->jumlah,
-                    "created_at"    => now(),
-                    "updated_at"    => now(),
-                ];
+            foreach ($details as &$d) {
+                $d["penyewaan_id"] = $penyewaan->id;
             }
+            unset($d);
+
             DetailPenyewaan::insert($details);
 
             // ================= Hapus isi keranjang user =================

@@ -11,6 +11,7 @@ class Denda extends Model
     protected $fillable = [
         "kode_denda",
         "pengembalian_id",
+        "penyewaan_id",
         "user_id",
         "petugas_id",
         "nominal",
@@ -23,9 +24,14 @@ class Denda extends Model
         return $this->belongsTo(Pengembalian::class);
     }
 
+    public function penyewaan() {
+        return $this->belongsTo(Penyewaan::class);
+    }
+
     public function petugas() {
         return $this->belongsTo(User::class, "petugas_id");
     }
+
 
     public function user() {
         return $this->belongsTo(User::class);
