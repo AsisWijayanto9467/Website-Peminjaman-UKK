@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Kendaraan - Status & Riwayat Booking</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+        }
+
+        .vehicle-img {
+            height: 200px;
+            object-fit: cover;
+            background-color: #e9ecef;
+        }
+
+        .user-dropdown {
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .profile-photo-label {
+            transition: all 0.3s;
+        }
+
+        .profile-photo-label:hover {
+            transform: scale(1.1);
+        }
+
+        .booking-card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .booking-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .info-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        .info-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #212529;
+        }
+        .detail-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+        }
+        .detail-item:last-child { margin-bottom: 0; }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-car-front-fill me-2"></i>
+                <strong>Rental Mobil</strong>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pengguna/beranda">
+                            <i class="bi bi-house-door me-1"></i> Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/katalog">
+                            <i class="bi bi-car-front me-1"></i> Katalog Kendaraan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/booking/1">
+                            <i class="bi bi-journal-text me-1"></i> Booking Saya
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <a href="/keranjang" class="btn btn-outline-light me-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Keranjang
+                    </a>
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center user-dropdown"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="user-avatar me-2 shadow-sm">
+                                <img src="https://via.placeholder.com/35" alt="Avatar">
+                            </div>
+                            <div class="d-none d-md-block text-start">
+                                <div class="small fw-bold text-white lh-1">Budi Santoso</div>
+                                <div class="small text-white-50" style="font-size: 0.75rem;">budi@example.com</div>
+                            </div>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-person"></i> Profil Saya
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-journal-check"></i> Booking Saya
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="/logout" method="POST" onsubmit="return confirm('Anda yakin ingin logout?')">
+                                    <input type="hidden" name="_token" value="dummy-csrf-token">
+                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="container mt-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        <i class="bi bi-journal-check text-primary me-2"></i>Status & Riwayat Penyewaan
+                    </h4>
+                    <p class="text-muted small mb-0">
+                        Pantau status persetujuan dan riwayat penyewaan Anda di sini.
+                    </p>
+                </div>
+                <a href="/katalog" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Sewa Kendaraan Lain
+                </a>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001234</span>
+                            <small class="text-muted ms-2">(15 Oct 2026, 10:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                                <i class="bi bi-clock me-1"></i> Menunggu Konfirmasi
+                            </span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 px-3 py-2">
+                                <i class="bi bi-hourglass-split me-1"></i> Belum Bayar
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 20 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 23 Oct 2026 <small class="text-muted">(3 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Toyota Avanza</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-01</span> &middot; Rp 350.000/hari &middot; 1 unit &middot; 3 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 1.050.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 1.050.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <form action="/booking/cancel/1" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin membatalkan booking TRX-001234?');">
+                                    <input type="hidden" name="_token" value="dummy-csrf">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x-circle me-1"></i> Batalkan
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001235</span>
+                            <small class="text-muted ms-2">(14 Oct 2026, 09:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-info text-dark px-3 py-2">
+                                <i class="bi bi-hand-thumbs-up me-1"></i> Disetujui
+                            </span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 px-3 py-2">
+                                <i class="bi bi-hourglass-split me-1"></i> Belum Bayar
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 18 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 20 Oct 2026 <small class="text-muted">(2 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Honda Brio</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-02</span> &middot; Rp 300.000/hari &middot; 1 unit &middot; 2 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 600.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 600.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <a href="/booking/qr/2" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-cash-coin me-1"></i> Bayar Sekarang
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001236</span>
+                            <small class="text-muted ms-2">(13 Oct 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-info text-dark px-3 py-2">
+                                <i class="bi bi-hand-thumbs-up me-1"></i> Disetujui
+                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                                <i class="bi bi-cash-stack me-1"></i> Lunas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 19 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 21 Oct 2026 <small class="text-muted">(2 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Daihatsu Xenia</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-03</span> &middot; Rp 320.000/hari &middot; 1 unit &middot; 2 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 640.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 640.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <span class="text-muted small">
+                                    <i class="bi bi-lock me-1"></i>Menunggu Petugas
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001237</span>
+                            <small class="text-muted ms-2">(10 Oct 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary px-3 py-2">
+                                <i class="bi bi-car-front me-1"></i> Sedang Disewa
+                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                                <i class="bi bi-cash-stack me-1"></i> Lunas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 15 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 18 Oct 2026 <small class="text-muted">(3 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Toyota Avanza</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-01</span> &middot; Rp 350.000/hari &middot; 1 unit &middot; 3 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 1.050.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 1.050.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <a href="/pengembalian/form/4" class="btn btn-success btn-sm">
+                                    <i class="bi bi-arrow-return-left me-1"></i> Kembalikan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001238</span>
+                            <small class="text-muted ms-2">(12 Oct 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary px-3 py-2">
+                                <i class="bi bi-search me-1"></i> Verifikasi Pengembalian
+                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                                <i class="bi bi-cash-stack me-1"></i> Lunas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 13 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 16 Oct 2026 <small class="text-muted">(3 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Honda Brio</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-02</span> &middot; Rp 300.000/hari &middot; 1 unit &middot; 3 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 900.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 900.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <span class="text-muted small">
+                                    <i class="bi bi-search me-1"></i>Verifikasi Petugas
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001239</span>
+                            <small class="text-muted ms-2">(05 Oct 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger px-3 py-2">
+                                <i class="bi bi-exclamation-triangle me-1"></i> Ada Denda
+                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                                <i class="bi bi-cash-stack me-1"></i> Lunas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 06 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 09 Oct 2026 <small class="text-muted">(3 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Daihatsu Xenia</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-03</span> &middot; Rp 320.000/hari &middot; 1 unit &middot; 3 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 960.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 960.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <a href="/denda/form/1" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-cash-coin me-1"></i>Bayar Denda
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001240</span>
+                            <small class="text-muted ms-2">(01 Oct 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-success px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i> Selesai
+                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2">
+                                <i class="bi bi-cash-stack me-1"></i> Lunas
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 02 Oct 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 04 Oct 2026 <small class="text-muted">(2 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Toyota Avanza</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-01</span> &middot; Rp 350.000/hari &middot; 1 unit &middot; 2 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 700.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 700.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <span class="text-muted small">
+                                    <i class="bi bi-lock me-1"></i>Selesai
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card booking-card">
+                    <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <span class="text-muted small d-block">Kode Transaksi</span>
+                            <span class="fw-bold font-monospace text-dark fs-6">TRX-001241</span>
+                            <small class="text-muted ms-2">(28 Sep 2026, 08:00)</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger px-3 py-2">
+                                <i class="bi bi-x-circle me-1"></i> Dibatalkan
+                            </span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 px-3 py-2">
+                                <i class="bi bi-hourglass-split me-1"></i> Belum Bayar
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Nama Peminjam</div>
+                                <div class="info-value"><i class="bi bi-person-circle text-primary me-1"></i> Budi Santoso</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">No. Identitas (KTP)</div>
+                                <div class="info-value"><i class="bi bi-credit-card-2-front text-primary me-1"></i> 3372011234560001</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengambilan</div>
+                                <div class="info-value"><i class="bi bi-calendar-event text-primary me-1"></i> 30 Sep 2026</div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="info-label">Tanggal Pengembalian</div>
+                                <div class="info-value"><i class="bi bi-calendar-check text-primary me-1"></i> 01 Oct 2026 <small class="text-muted">(1 hari)</small></div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="info-label">Alamat Peminjam</div>
+                                <div class="info-value fw-normal"><i class="bi bi-geo-alt text-primary me-1"></i> Jl. Slamet Riyadi No. 10, Surakarta</div>
+                            </div>
+                        </div>
+                        <div class="info-label mb-2"><i class="bi bi-box-seam me-1"></i> Detail Peralatan (1 item)</div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <div class="detail-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold small">Honda Brio</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <span class="font-monospace">MOBIL-02</span> &middot; Rp 300.000/hari &middot; 1 unit &middot; 1 hari
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary small">Rp 300.000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center g-3 pt-3 border-top">
+                            <div class="col-md-6 col-12">
+                                <span class="info-label d-block">Total Biaya</span>
+                                <h5 class="fw-bold text-primary mb-0">Rp 300.000</h5>
+                            </div>
+                            <div class="col-md-6 col-12 text-md-end">
+                                <span class="text-muted small">
+                                    <i class="bi bi-lock me-1"></i>Dibatalkan
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

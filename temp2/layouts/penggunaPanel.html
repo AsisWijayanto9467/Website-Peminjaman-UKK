@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Kendaraan - Beranda</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+        }
+
+        .vehicle-img {
+            height: 200px;
+            object-fit: cover;
+            background-color: #e9ecef;
+        }
+
+        .user-dropdown {
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .profile-photo-label {
+            transition: all 0.3s;
+        }
+
+        .profile-photo-label:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-car-front-fill me-2"></i>
+                <strong>Rental Mobil</strong>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-house-door me-1"></i> Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-car-front me-1"></i> Katalog Kendaraan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-journal-text me-1"></i> Booking Saya
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <!-- Tombol Keranjang -->
+                    <a href="#" class="btn btn-outline-light me-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Keranjang
+                    </a>
+
+                    <!-- Dropdown User (hardcoded John Doe) -->
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center user-dropdown"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="user-avatar me-2 shadow-sm">
+                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=0d6efd&color=fff&size=35"
+                                    alt="Avatar">
+                            </div>
+                            <div class="d-none d-md-block text-start">
+                                <div class="small fw-bold text-white lh-1">John Doe</div>
+                                <div class="small text-white-50" style="font-size: 0.75rem;">john@email.com</div>
+                            </div>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-person"></i> Profil Saya
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-journal-check"></i> Booking Saya
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button type="button"
+                                    class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                    onclick="return confirm('Anda yakin ingin logout?')">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tombol Login & Register (guest) tetap ditampilkan -->
+                    <a href="#" class="btn btn-outline-light ms-2 me-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                    </a>
+                    <a href="#" class="btn btn-light">
+                        <i class="bi bi-person-plus me-1"></i> Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Alert Success -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Selamat datang di Rental Mobil!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Alert Error -->
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i> Silakan login terlebih dahulu.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- ================= KONTEN MAIN ================= -->
+        <div class="row">
+            <!-- Hero Section -->
+            <div class="col-12 mb-4">
+                <div class="card bg-primary text-white p-5">
+                    <h1 class="display-4 fw-bold">Sewa Kendaraan Mudah & Cepat</h1>
+                    <p class="lead">Dapatkan kendaraan impian Anda dengan harga terbaik</p>
+                    <div>
+                        <a href="#" class="btn btn-light btn-lg">
+                            <i class="bi bi-search me-2"></i> Cari Kendaraan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daftar Kendaraan -->
+        <h3 class="mb-3"><i class="bi bi-car-front me-2"></i>Kendaraan Tersedia</h3>
+        <div class="row">
+            <!-- Card 1 -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/400x200/0d6efd/fff?text=Toyota+Avanza"
+                        class="card-img-top vehicle-img" alt="Toyota Avanza">
+                    <div class="card-body">
+                        <h5 class="card-title">Toyota Avanza</h5>
+                        <p class="card-text text-muted">
+                            <i class="bi bi-person me-1"></i> 7 Kursi
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-fuel-pump me-1"></i> Bensin
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">Rp 350.000 <small class="text-muted fs-6">/hari</small></span>
+                            <span class="badge bg-success">Tersedia</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100 mt-3">
+                            <i class="bi bi-calendar-check me-1"></i> Sewa Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/400x200/6c757d/fff?text=Honda+CR-V"
+                        class="card-img-top vehicle-img" alt="Honda CR-V">
+                    <div class="card-body">
+                        <h5 class="card-title">Honda CR-V</h5>
+                        <p class="card-text text-muted">
+                            <i class="bi bi-person me-1"></i> 5 Kursi
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-fuel-pump me-1"></i> Bensin
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">Rp 550.000 <small class="text-muted fs-6">/hari</small></span>
+                            <span class="badge bg-warning">Terbatas</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100 mt-3">
+                            <i class="bi bi-calendar-check me-1"></i> Sewa Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/400x200/dc3545/fff?text=Suzuki+Ertiga"
+                        class="card-img-top vehicle-img" alt="Suzuki Ertiga">
+                    <div class="card-body">
+                        <h5 class="card-title">Suzuki Ertiga</h5>
+                        <p class="card-text text-muted">
+                            <i class="bi bi-person me-1"></i> 7 Kursi
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-fuel-pump me-1"></i> Bensin
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">Rp 320.000 <small class="text-muted fs-6">/hari</small></span>
+                            <span class="badge bg-danger">Habis</span>
+                        </div>
+                        <a href="#" class="btn btn-secondary w-100 mt-3" disabled>
+                            <i class="bi bi-calendar-check me-1"></i> Tidak Tersedia
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Saya -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3><i class="bi bi-journal-text me-2"></i>Booking Saya</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kendaraan</th>
+                                        <th>Tanggal Sewa</th>
+                                        <th>Durasi</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Toyota Avanza</strong></td>
+                                        <td>01-08-2026</td>
+                                        <td>3 Hari</td>
+                                        <td>Rp 1.050.000</td>
+                                        <td><span class="badge bg-success">Aktif</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Honda CR-V</strong></td>
+                                        <td>15-08-2026</td>
+                                        <td>2 Hari</td>
+                                        <td>Rp 1.100.000</td>
+                                        <td><span class="badge bg-warning">Menunggu</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Suzuki Ertiga</strong></td>
+                                        <td>20-08-2026</td>
+                                        <td>1 Hari</td>
+                                        <td>Rp 320.000</td>
+                                        <td><span class="badge bg-secondary">Selesai</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

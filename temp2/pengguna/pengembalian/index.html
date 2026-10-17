@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Kendaraan - Ajukan Pengembalian</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+        }
+
+        .vehicle-img {
+            height: 200px;
+            object-fit: cover;
+            background-color: #e9ecef;
+        }
+
+        .user-dropdown {
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .profile-photo-label {
+            transition: all 0.3s;
+        }
+
+        .profile-photo-label:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- STATE BADGE --- */
+        .state-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            background: #e2e8f0;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-car-front-fill me-2"></i>
+                <strong>Rental Mobil</strong>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-house-door me-1"></i> Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-car-front me-1"></i> Katalog Kendaraan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-journal-text me-1"></i> Booking Saya
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <!-- Tombol Keranjang (auth) -->
+                    <a href="#" class="btn btn-outline-light me-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Keranjang
+                    </a>
+
+                    <!-- Dropdown User (auth) -->
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center user-dropdown"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="user-avatar me-2 shadow-sm">A</div>
+                            <div class="d-none d-md-block text-start">
+                                <div class="small fw-bold text-white lh-1">Administrator</div>
+                                <div class="small text-white-50" style="font-size: 0.75rem;">admin@rentalmobil.com</div>
+                            </div>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-person"></i> Profil Saya
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="bi bi-journal-check"></i> Booking Saya
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button type="button"
+                                    class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                    onclick="return confirm('Anda yakin ingin logout?')">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tombol Guest (Login & Register) tetap ditampilkan -->
+                    <a href="#" class="btn btn-outline-light ms-2 me-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                    </a>
+                    <a href="#" class="btn btn-light">
+                        <i class="bi bi-person-plus me-1"></i> Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Alert Error -->
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i> Terjadi kesalahan saat memproses data.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Alert Success -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Data berhasil disimpan.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- ================= AJUKAN PENGEMBALIAN ================= -->
+        <div class="container py-4" style="max-width: 720px;">
+
+            <!-- Header -->
+            <div class="mb-4">
+                <a href="#" class="text-decoration-none small">
+                    <i class="bi bi-arrow-left me-1"></i>Kembali ke Riwayat
+                </a>
+                <h5 class="fw-bold mt-2 mb-0">
+                    <i class="bi bi-arrow-return-left text-success me-2"></i>Ajukan Pengembalian
+                </h5>
+                <p class="text-muted small mb-0">
+                    Booking <span class="font-monospace fw-bold">BK-20260901</span>
+                </p>
+            </div>
+
+            <!-- Flash Error -->
+            <div class="alert alert-danger small">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Terjadi kesalahan saat memproses pengembalian.
+                <span class="state-badge ms-1">Kondisi: Ada Error</span>
+            </div>
+
+            <!-- Info Penyewaan -->
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+                <div class="card-body">
+                    <div class="row g-3 small">
+                        <div class="col-md-6">
+                            <span class="text-muted d-block">Nama Peminjam</span>
+                            <strong>Budi Santoso</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted d-block">Jadwal Pengembalian</span>
+                            <strong>04 Okt 2026</strong>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted d-block mb-1">Peralatan</span>
+
+                            <!-- Kondisi: foreach detail penyewaan (2 baris) -->
+                            <div class="d-flex justify-content-between border-bottom py-1">
+                                <span>Toyota Avanza (1 unit)</span>
+                                <span class="text-muted font-monospace">KND-001</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom py-1">
+                                <span>Honda Brio (2 unit)</span>
+                                <span class="text-muted font-monospace">KND-002</span>
+                            </div>
+
+                            <!-- Kondisi: peralatan null (fallback '-') -->
+                            <div class="d-flex justify-content-between border-bottom py-1">
+                                <span>— (1 unit) <span class="state-badge ms-1">Fallback: nama null</span></span>
+                                <span class="text-muted font-monospace">— <span class="state-badge ms-1">Fallback: kode null</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+
+                    <form action="#" method="POST" enctype="multipart/form-data">
+
+                        <!-- Info Tanggal Pengajuan (read-only) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Tanggal Pengajuan</label>
+                            <input type="text" class="form-control bg-light"
+                                value="17 Oktober 2026" readonly>
+                            <small class="text-muted">
+                                Jadwal pengembalian: 04 Okt 2026
+                                &middot; Tanggal pengajuan otomatis dari sistem.
+                            </small>
+                        </div>
+
+                        <!-- Foto Bukti -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">
+                                Foto Bukti Pengembalian
+                            </label>
+                            <input type="file" name="photo_prove"
+                                accept="image/jpg,image/jpeg,image/png"
+                                class="form-control">
+                            <small class="text-muted">
+                                Opsional. Format JPG/JPEG/PNG, maks 2 MB.
+                            </small>
+
+                            <!-- Kondisi: @error photo_prove ADA -->
+                            <div class="invalid-feedback d-block mt-1">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Foto bukti tidak valid.
+                                <span class="state-badge ms-1">Kondisi: Error photo_prove</span>
+                            </div>
+
+                            <!-- Kondisi: tanpa error (info saja) -->
+                            <small class="text-success d-block mt-1">
+                                <i class="bi bi-check-circle me-1"></i>
+                                File valid.
+                                <span class="state-badge ms-1">Kondisi: Tanpa Error</span>
+                            </small>
+                        </div>
+
+                        <!-- Catatan Pengguna -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Catatan Pengguna</label>
+                            <textarea name="catatan_pengguna" rows="3" class="form-control"
+                                placeholder="Contoh: Barang dikembalikan dalam kondisi baik, tanpa kerusakan."></textarea>
+
+                            <!-- Kondisi: @error catatan_pengguna ADA -->
+                            <div class="invalid-feedback d-block mt-1">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Catatan pengguna tidak valid.
+                                <span class="state-badge ms-1">Kondisi: Error catatan_pengguna</span>
+                            </div>
+
+                            <!-- Kondisi: tanpa error (info saja) -->
+                            <small class="text-success d-block mt-1">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Catatan valid.
+                                <span class="state-badge ms-1">Kondisi: Tanpa Error</span>
+                            </small>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="alert alert-info small rounded-3">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Setelah diajukan, status booking akan berubah menjadi
+                            <strong>Verifikasi Pengembalian</strong> dan menunggu konfirmasi petugas.
+                        </div>
+
+                        <!-- Action -->
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-outline-secondary flex-grow-1">
+                                <i class="bi bi-x-lg me-1"></i>Batal
+                            </a>
+                            <button type="submit" class="btn btn-success flex-grow-1"
+                                onclick="return confirm('Ajukan pengembalian untuk booking ini?');">
+                                <i class="bi bi-send me-1"></i>Ajukan Pengembalian
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
